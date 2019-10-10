@@ -98,6 +98,9 @@ def ClassificationPerDataset(file, algorithm, models, parameters):
     if 'id' in data.columns:
         data = data.drop('id', 1)
 
+    # remove columns with only NaN values
+    empty_cols = ~data.isna().all()
+    data = data.loc[:, empty_cols]
     
     # identifying numerical and categorical features
     cols = set(data.columns)
@@ -117,15 +120,16 @@ def ClassificationPerDataset(file, algorithm, models, parameters):
         imputation_types = ['mean', 'median', 'mode']
 
         final_logs = pd.DataFrame()
-
+        
+        imputed_data = data.copy()
 
         for index, num_imput_type in enumerate(imputation_types):
             print('{}'.format(num_imput_type))
 
-            data[list(num_cols)] = numeric_impute(data, num_cols, num_imput_type)
+            imputed_data[list(num_cols)] = numeric_impute(data, num_cols, num_imput_type)
 
             # logs per imputation method
-            logs = get_logs(data, num_imput_type, algorithm,
+            logs = get_logs(imputed_data, num_imput_type, algorithm,
                             file, combinations, models)
 
             final_logs = pd.concat([final_logs, logs], axis=0)
@@ -379,9 +383,12 @@ def numeric_impute(data, num_cols, method):
             output - (DataFrame) dataset with imputed missing values 
             
     '''
+    
     num_data = data[list(num_cols)]
-    output = num_data.fillna(getattr(num_data, method)().iloc[0])
-
+    if method == 'mode':
+        output = num_data.fillna(getattr(num_data, method)().iloc[0])
+    else:
+        output = num_data.fillna(getattr(num_data, method)())
     return output
 
 
