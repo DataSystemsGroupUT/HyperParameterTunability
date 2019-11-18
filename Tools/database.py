@@ -19,7 +19,7 @@ class Database(object):
                 'PerformanceData/{0}_results_total.csv'.format(algorithm), low_memory=False
             )
             out['fanova_{}'.format(algorithm)] = pd.read_csv(
-                'PerformanceData/fanova/{0}_fANOVA_results.csv'.format(algorithm), low_memory=False
+                'PerformanceData/{0}_fANOVA_results.csv'.format(algorithm), low_memory=False
             )
         out['metafeatures'] = pd.read_csv('PerformanceData/metafeatures.csv')
         return out
@@ -160,6 +160,10 @@ class Database(object):
                 print(data.dataset[i])
             ranked_data.iloc[i, 1:] = self.ranker_per_row(data.iloc[i, 1:], data.dataset[i])
         return ranked_data
+
+    @staticmethod
+    def merge(dataset1, dataset2, on='dataset'):
+        return dataset1.merge(dataset2, on)
 
     @staticmethod
     def arg_sort(input_vec):

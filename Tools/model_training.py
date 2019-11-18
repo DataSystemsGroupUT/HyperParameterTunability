@@ -91,6 +91,7 @@ class Model(object):
             return self.best_score
 
     def plot_tree(self, save_plot=False):
+        # for Decision Tree only
         model = self.best_model
         plot_tree(model, feature_names=self.X.columns)
         if save_plot:

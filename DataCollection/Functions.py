@@ -10,9 +10,61 @@ from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, f1_score,\
     recall_score, precision_score, roc_auc_score
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier,\
+    GradientBoostingClassifier, ExtraTreesClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+N = 500
+
+params_decision_tree = {'max_features': np.random.uniform(0.1, 0.9, N),
+                        'min_samples_leaf': np.random.choice(np.arange(1, 21, 1), N),
+                        'min_samples_split': np.random.choice(np.arange(2, 21, 1), N),
+                        'criterion': np.random.choice(['entropy', 'gini'], N)}
+
+params_random_forest = {'n_estimators': np.repeat(100, N),
+                        'bootstrap': np.random.choice([True, False], N),
+                        'max_features': np.random.uniform(0.1, 0.9, N),
+                        'min_samples_leaf': np.random.choice(np.arange(1, 21, 1), N),
+                        'min_samples_split': np.random.choice(np.arange(2, 21, 1), N),
+                        'criterion': np.random.choice(['entropy', 'gini'], N)}
+
+params_adaboost = {'base_estimator__max_depth': np.random.choice(np.arange(1, 11, 1), N),
+                   'algorithm': np.random.choice(['SAMME', 'SAMME.R'], N),
+                   'n_estimators': np.random.choice(np.arange(50, 501, 1), N),  # iterations in the paper
+                   'learning_rate': np.random.uniform(0.01, 2, N)}
+
+params_svm = {'kernel': np.random.choice(['rbf', 'sigmoid'], N),
+              'C': np.random.uniform(2 ** (-5), 2 ** 15, N),
+              'coef0': np.random.uniform(-1, 1, N),
+              'gamma': np.random.uniform(2 ** (-15), 2 ** 3, N),
+              'shrinking': np.random.choice([True, False], N),
+              'tol': np.random.uniform(10 ** (-5), 10 ** (-1), N)}
+
+params_gboosting = {'learning_rate': np.random.uniform(0.01, 1, N),
+                    'criterion': np.random.choice(['friedman_mse', 'mse'], N),
+                   'n_estimators': np.random.choice(np.arange(50, 501, 1), N),
+                   'max_depth': np.random.choice(np.arange(1, 11, 1), N),
+                   'min_samples_split': np.random.choice(np.arange(2, 21, 1), N),
+                   'min_samples_leaf': np.random.choice(np.arange(1, 21, 1), N),
+                   'max_features': np.random.uniform(0.1, 0.9, N)}
+
+parameters = {'AdaBoost': params_adaboost,
+              'RandomForest': params_random_forest,
+              'SVM': params_svm,
+              'ExtraTrees': params_random_forest,
+              'GradientBoosting': params_gboosting,
+              'DecisionTree': params_decision_tree}
+
+models = {'AdaBoost': AdaBoostClassifier(base_estimator=DecisionTreeClassifier()),
+          'RandomForest': RandomForestClassifier(),
+          'SVM': SVC(),
+          'ExtraTrees': ExtraTreesClassifier(),
+          'GradientBoosting': GradientBoostingClassifier(),
+          'DecisionTree': DecisionTreeClassifier()}
 
 
-def classification_per_algorithm(path, algorithm, models, parameters):
+def classification_per_algorithm(path, algorithm):
     """
     Fits different models with random configurations 
     on each of the datasets in path for the specified ML algorithm
@@ -22,11 +74,6 @@ def classification_per_algorithm(path, algorithm, models, parameters):
             algorithm - (str) takes one of the following options
                         {RandomForest, AdaBoost, ExtraTrees, 
                          SVM, GradientBoosting}
-            models - (dict) key: algorithm, 
-                            value: the class of the algorithms
-            parameters - (dict) key: algorithm
-                                value: the configuration space of 
-                                       the algorithm
     Outputs: 
             writes the results on a csv file
     """
@@ -40,7 +87,7 @@ def classification_per_algorithm(path, algorithm, models, parameters):
     for index, file in enumerate(all_files):
         print('Dataset {}({}) out of {} \n'.format(index + 1, file, all_datasets), flush=True)
         try:
-            file_logs = ClassificationPerDataset(file, algorithm, models, parameters)
+            file_logs = classification_per_dataset(file, algorithm, models, parameters)
             results = pd.concat([results, file_logs], axis=0)
 
             results.to_csv('{}_results.csv'.format(algorithm),
@@ -359,3 +406,4 @@ def numeric_impute(data, num_cols, method):
     else:
         output = num_data.fillna(getattr(num_data, method)())
     return output
+
