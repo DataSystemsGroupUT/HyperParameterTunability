@@ -20,7 +20,9 @@ param_names <- function(data, algorithm){
                             "'" = ""),
                        data$param)
   
-  if (algorithm == 'RandomForest' | algorithm == 'ExtraTrees'){
+  if (is.finite(match(algorithm, c('RandomForest',
+                         'ExtraTrees',
+                         'DecisionTree')))){
     
     data$param <- gsubfn('.',
                          list("criterion" = "split criterion",
@@ -60,6 +62,7 @@ param_names <- function(data, algorithm){
 violin_plot <- function(data, top_n=NA, horizontal=T){
   
   require(dplyr)
+  require(ggplot2)
   
   top <- data %>%
     group_by(param)%>% 
@@ -107,7 +110,7 @@ violin_plot <- function(data, top_n=NA, horizontal=T){
 
 # importing the data
 
-f_data <- read.csv('AdaBoost_fANOVA_results.csv', 
+f_data <- read.csv('DecisionTree_fANOVA_results.csv', 
                  colClasses = c("character", "numeric", rep("NULL", 3)))
 head(f_data)
 
@@ -119,7 +122,13 @@ head(f_data)
 # 5 ('learning_rate', 'max_depth') 0.114227831
 # 6  ('max_depth', 'n_estimators') 0.090332874
 
-f_data$param <- param_names(f_data,'AdaBoost')
+# filter only imputation case
+f_data <- read.csv('DecisionTree_fANOVA_results.csv') 
+f_data <- f_data[f_data$imputation == 'True',1:2]
+                   
+head(f_data)
+f_data$param <- as.character(f_data$param)
+f_data$param <- param_names(f_data,'DecisionTree')
 
 violin_plot(f_data,
             top_n = 10,

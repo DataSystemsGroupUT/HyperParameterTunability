@@ -3,7 +3,6 @@ import pandas as pd
 import glob
 import time
 import warnings
-
 from sys import stdout
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
@@ -13,9 +12,8 @@ from sklearn.metrics import accuracy_score, f1_score,\
     recall_score, precision_score, roc_auc_score
 
 
-
-def ClassificationPerAlgorithm(path, algorithm, models, parameters):
-    '''
+def classification_per_algorithm(path, algorithm, models, parameters):
+    """
     Fits different models with random configurations 
     on each of the datasets in path for the specified ML algorithm
     
@@ -31,22 +29,16 @@ def ClassificationPerAlgorithm(path, algorithm, models, parameters):
                                        the algorithm
     Outputs: 
             writes the results on a csv file
-            
-    ''' 
-    
+    """
     
     warnings.filterwarnings("ignore")
+    all_files = glob.glob(path + '*.csv')
+    all_datasets = len(all_files)
 
-    allFiles = glob.glob(path + '*.csv')
-
-    all_datasets = len(allFiles)
-    
     results = pd.DataFrame()
-
     start_all = time.perf_counter()
-    for index, file in enumerate(allFiles):
+    for index, file in enumerate(all_files):
         print('Dataset {}({}) out of {} \n'.format(index + 1, file, all_datasets), flush=True)
-        
         try:
             file_logs = ClassificationPerDataset(file, algorithm, models, parameters)
             results = pd.concat([results, file_logs], axis=0)
@@ -54,19 +46,16 @@ def ClassificationPerAlgorithm(path, algorithm, models, parameters):
             results.to_csv('{}_results.csv'.format(algorithm),
                            header=True,
                            index=False)
-        
         except Exception as e:
-            print('The following error occured in case of the dataset {}: \n{}'.format(file, e))
-            
-        
+            print('The following error occurred in case of the dataset {}: \n{}'.format(file, e))
     end_all = time.perf_counter()
     time_taken = (end_all - start_all) / 3600
     stdout.write("Performance data is collected! \n ")
     print('Total time: {} hours'.format(time_taken))
 
 
-def ClassificationPerDataset(file, algorithm, models, parameters):
-    '''
+def classification_per_dataset(file, algorithm, models, parameters):
+    """
     Gathers the performance data for each random configuration 
     on the given dataset for the specified ML algorithm  and 
     performs data imputation if necessary
@@ -84,7 +73,7 @@ def ClassificationPerDataset(file, algorithm, models, parameters):
     Outputs: 
             final_logs - (DataFrame) performance data
             
-    '''
+    """
     
     data = pd.read_csv(file,
                        index_col=None,
@@ -135,7 +124,6 @@ def ClassificationPerDataset(file, algorithm, models, parameters):
             final_logs = pd.concat([final_logs, logs], axis=0)
 
     else:
-
         num_imput_type = None
 
         final_logs = get_logs(data, num_imput_type, algorithm,
@@ -143,10 +131,10 @@ def ClassificationPerDataset(file, algorithm, models, parameters):
 
     return final_logs
 
+
 def get_logs(data, num_imput_type, algorithm, file,
              combinations, models):
-    
-    '''
+    """
     Gathers the performance data for each random configuration 
     on the given dataset for the specified ML algorithm
     
@@ -171,8 +159,7 @@ def get_logs(data, num_imput_type, algorithm, file,
     Outputs: 
             logs - (DataFrame) performance data
             
-    '''
-
+    """
     # excluding the response variable
     X = data.iloc[:, :-1]
 
@@ -207,14 +194,10 @@ def get_logs(data, num_imput_type, algorithm, file,
 
     # setting the number of folds of the Cross-Validation
     k = 10
-
     kf = StratifiedKFold(n_splits=k, shuffle=True)
 
-
     logs = combinations.copy()
-
     n_comb = logs.shape[0]
-
     logs.insert(loc=0, column='dataset', value=file)
     logs['imputation'] = num_imput_type
 
@@ -238,7 +221,6 @@ def get_logs(data, num_imput_type, algorithm, file,
         precision = np.zeros(k)
         auc = np.zeros(k)
 
-        
         for train_index, test_index in kf.split(X, y):
             stdout.write("\rCV {}/{}".format(i+1, k))
 
@@ -249,24 +231,19 @@ def get_logs(data, num_imput_type, algorithm, file,
             
             y_train, y_test = y[train_index], y[test_index]
 
-
             start_tr = time.perf_counter()
             model.fit(X_train, y_train)
             end_tr = time.perf_counter()
-
             train_time = end_tr - start_tr
 
             predictions_tr = model.predict(X_train)
             acc_tr[i] = accuracy_score(y_train, predictions_tr)
-
             start_ts = time.perf_counter()
             predictions = model.predict(X_test)
             end_ts = time.perf_counter()
             test_time = end_ts - start_ts
-
             cv_train_time[i] = train_time
             cv_test_time[i] = test_time
-
             accuracy[i] = accuracy_score(y_test, predictions)
 
             if multilabel:
@@ -282,19 +259,16 @@ def get_logs(data, num_imput_type, algorithm, file,
 
             stdout.flush()
 
-
         logs.loc[index, "Mean_Train_time"] = np.mean(cv_train_time)
         logs.loc[index, "Std_Train_time"] = np.std(cv_train_time)
         logs.loc[index, "Mean_Test_time"] = np.mean(cv_test_time)
         logs.loc[index, "Std_Test_time"] = np.std(cv_test_time)
-
         logs.loc[index, 'CV_accuracy_train'] = np.mean(acc_tr)
         logs.loc[index, 'CV_accuracy'] = np.mean(accuracy)
         logs.loc[index, 'CV_f1_score'] = np.mean(f1)
         logs.loc[index, 'CV_recall'] = np.mean(recall)
         logs.loc[index, 'CV_precision'] = np.mean(precision)
         logs.loc[index, 'CV_auc'] = np.mean(auc)
-
         logs.loc[index, 'Std_accuracy_train'] = np.std(acc_tr)
         logs.loc[index, 'Std_accuracy'] = np.std(accuracy)
         logs.loc[index, 'Std_f1_score'] = np.std(f1)
@@ -306,8 +280,9 @@ def get_logs(data, num_imput_type, algorithm, file,
 
     return logs
 
+
 def get_combinations(parameters, algorithm):
-    '''
+    """
     Creates a DataFrame of the random configurations
     of the given algorithm
     
@@ -323,15 +298,14 @@ def get_combinations(parameters, algorithm):
             combinations - (DataFrame) realizations of the 
                             random configurations
             
-    '''
-    
+    """
     param_grid = parameters[algorithm]
-
     combinations = pd.DataFrame(param_grid)
     return combinations
 
+
 def other_metrics(y_true, predictions, multilabel):
-    '''
+    """
     Treating the case of multiple labels for 
     computing performance measures suitable for 
     binary labels
@@ -346,17 +320,14 @@ def other_metrics(y_true, predictions, multilabel):
     Outputs: 
             f1, recall, precision, auc - (float) performace metrics
             
-    '''
-    
+    """
     
     if multilabel:
-
         f1 = f1_score(y_true, predictions, average='micro')
         recall = recall_score(y_true, predictions, average='micro')
         precision = precision_score(y_true, predictions, average='micro')
         auc = roc_auc_score(y_true, predictions, average='micro')
     else:
-
         f1 = f1_score(y_true, predictions)
         recall = recall_score(y_true, predictions)
         precision = precision_score(y_true, predictions)
@@ -365,9 +336,8 @@ def other_metrics(y_true, predictions, multilabel):
     return f1, recall, precision, auc
 
 
-
 def numeric_impute(data, num_cols, method):
-    '''
+    """
     Performs numerical data imputaion based 
     on the given method
     
@@ -382,20 +352,10 @@ def numeric_impute(data, num_cols, method):
     Outputs: 
             output - (DataFrame) dataset with imputed missing values 
             
-    '''
-    
+    """
     num_data = data[list(num_cols)]
     if method == 'mode':
         output = num_data.fillna(getattr(num_data, method)().iloc[0])
     else:
         output = num_data.fillna(getattr(num_data, method)())
     return output
-
-
-
-
-
-
-
-
-

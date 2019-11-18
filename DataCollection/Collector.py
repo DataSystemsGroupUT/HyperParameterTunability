@@ -1,9 +1,7 @@
 import numpy as np
 from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier,\
+    GradientBoostingClassifier, ExtraTreesClassifier
 from sklearn.tree import DecisionTreeClassifier
 from Functions import ClassificationPerDataset, ClassificationPerAlgorithm
 
@@ -22,12 +20,10 @@ params_random_forest = {'n_estimators': np.repeat(100, N),
                         'min_samples_split': np.random.choice(np.arange(2, 21, 1), N),
                         'criterion': np.random.choice(['entropy', 'gini'], N)}
 
-
 params_adaboost = {'base_estimator__max_depth': np.random.choice(np.arange(1, 11, 1), N),
                    'algorithm': np.random.choice(['SAMME', 'SAMME.R'], N),
                    'n_estimators': np.random.choice(np.arange(50, 501, 1), N),  # iterations in the paper
                    'learning_rate': np.random.uniform(0.01, 2, N)}
-
 
 params_svm = {'kernel': np.random.choice(['rbf', 'sigmoid'], N),
               'C': np.random.uniform(2 ** (-5), 2 ** (15), N),
@@ -44,9 +40,6 @@ params_gboosting = {'learning_rate': np.random.uniform(0.01, 1, N),
                    'min_samples_leaf': np.random.choice(np.arange(1, 21, 1), N),
                    'max_features': np.random.uniform(0.1, 0.9, N)}
                    
-                   
-
-
 parameters = {'AdaBoost': params_adaboost,
               'RandomForest': params_random_forest,
               'SVM': params_svm,
@@ -61,7 +54,5 @@ models = {'AdaBoost': AdaBoostClassifier(base_estimator=DecisionTreeClassifier()
           'GradientBoosting': GradientBoostingClassifier(),
           'DecisionTree': DecisionTreeClassifier()}
 
-
-
-ClassificationPerAlgorithm('dataset/', 'DecisionTree', models, parameters)
+classification_per_algorithm('Datasets/', 'DecisionTree', models, parameters)
 
