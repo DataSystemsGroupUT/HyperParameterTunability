@@ -1,0 +1,7 @@
+,AB_max,ET_max,RF_max,GB_max,DT_max,SVM_max
+AB_max,0,1,1,0,1,1
+ET_max,1,0,0,1,1,1
+RF_max,1,0,0,1,1,1
+GB_max,0,1,1,0,1,1
+DT_max,1,1,1,1,0,1
+SVM_max,1,1,1,1,1,0
