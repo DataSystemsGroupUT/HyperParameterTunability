@@ -5,7 +5,7 @@ The following repository contains:
 * the scripts for collecting performance data of 6 
 machine learning algorithms on 200 classification tasks from OpenML environment
 * the collected performance data of SVM, Decision Tree, Random Forest, AdaBoost, Gradient Boosting and Extra Trees Classifiers.
-* Several notebooks that each ones performs one experiments and conduncts the results.
+* Several notebooks that each performs one experiment and conducts the results.
 * Based on PerformanceData, created new datasets that all are in output_csv folders.
 * tools for 
     - Importing and modifying the collected data
