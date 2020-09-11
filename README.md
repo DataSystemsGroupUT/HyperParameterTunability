@@ -1,14 +1,18 @@
 
 # HyperParameterTunability
 
-The following repository contains 
+The following repository contains: 
 * the scripts for collecting performance data of 6 
 machine learning algorithms on 200 classification tasks from OpenML environment
 * the collected performance data of SVM, Decision Tree, Random Forest, AdaBoost, Gradient Boosting and Extra Trees Classifiers.
+* Several notebooks that each ones performs one experiments and conduncts the results.
+* Based on PerformanceData, created new datasets that all are in output_csv folders.
 * tools for 
-    - importing and modifying the collected data
-    - searching correlation between the dataset metafeatures and classifier performances
-    - conducting statistical tests to compare performance of the classifiers over the tasks 
+    - Importing and modifying the collected data
+    - Searching correlation between the dataset metafeatures and classifier performances.
+    - Conducting statistical tests to compare performance of the classifiers over the tasks.
+    - Computing the best value for each important hyperparameter.
+    - Computing Wilcoxon test for verifing the result.
 * script for extracting metafeatures of the datasets
 * script for performing fANOVA on the performance data
     
@@ -174,88 +178,90 @@ do_nemenyi_test(ranked_datasets, plot=True)
 
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+  <style scoped>
+      .dataframe tbody tr th:only-of-type {
+          vertical-align: middle;
+      }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
+      .dataframe tbody tr th {
+          vertical-align: top;
+      }
 
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AB</th>
-      <th>DT</th>
-      <th>ET</th>
-      <th>GB</th>
-      <th>RF</th>
-      <th>SVM</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>AB</th>
-      <td>-1.000000</td>
-      <td>0.001</td>
-      <td>0.173720</td>
-      <td>0.900000</td>
-      <td>0.011845</td>
-      <td>0.001</td>
-    </tr>
-    <tr>
-      <th>DT</th>
-      <td>0.001000</td>
-      <td>-1.000</td>
-      <td>0.001000</td>
-      <td>0.001000</td>
-      <td>0.001000</td>
-      <td>0.900</td>
-    </tr>
-    <tr>
-      <th>ET</th>
-      <td>0.173720</td>
-      <td>0.001</td>
-      <td>-1.000000</td>
-      <td>0.105836</td>
-      <td>0.900000</td>
-      <td>0.001</td>
-    </tr>
-    <tr>
-      <th>GB</th>
-      <td>0.900000</td>
-      <td>0.001</td>
-      <td>0.105836</td>
-      <td>-1.000000</td>
-      <td>0.005603</td>
-      <td>0.001</td>
-    </tr>
-    <tr>
-      <th>RF</th>
-      <td>0.011845</td>
-      <td>0.001</td>
-      <td>0.900000</td>
-      <td>0.005603</td>
-      <td>-1.000000</td>
-      <td>0.001</td>
-    </tr>
-    <tr>
-      <th>SVM</th>
-      <td>0.001000</td>
-      <td>0.900</td>
-      <td>0.001000</td>
-      <td>0.001000</td>
-      <td>0.001000</td>
-      <td>-1.000</td>
-    </tr>
-  </tbody>
-</table>
+      .dataframe thead th {
+          text-align: right;
+      }
+  </style>
+
+  <table border="1" class="dataframe">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th>AB</th>
+        <th>DT</th>
+        <th>ET</th>
+        <th>GB</th>
+        <th>RF</th>
+        <th>SVM</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>AB</th>
+        <td>-1.000000</td>
+        <td>0.001</td>
+        <td>0.173720</td>
+        <td>0.900000</td>
+        <td>0.011845</td>
+        <td>0.001</td>
+      </tr>
+      <tr>
+        <th>DT</th>
+        <td>0.001000</td>
+        <td>-1.000</td>
+        <td>0.001000</td>
+        <td>0.001000</td>
+        <td>0.001000</td>
+        <td>0.900</td>
+      </tr>
+      <tr>
+        <th>ET</th>
+        <td>0.173720</td>
+        <td>0.001</td>
+        <td>-1.000000</td>
+        <td>0.105836</td>
+        <td>0.900000</td>
+        <td>0.001</td>
+      </tr>
+      <tr>
+        <th>GB</th>
+        <td>0.900000</td>
+        <td>0.001</td>
+        <td>0.105836</td>
+        <td>-1.000000</td>
+        <td>0.005603</td>
+        <td>0.001</td>
+      </tr>
+      <tr>
+        <th>RF</th>
+        <td>0.011845</td>
+        <td>0.001</td>
+        <td>0.900000</td>
+        <td>0.005603</td>
+        <td>-1.000000</td>
+        <td>0.001</td>
+      </tr>
+      <tr>
+        <th>SVM</th>
+        <td>0.001000</td>
+        <td>0.900</td>
+        <td>0.001000</td>
+        <td>0.001000</td>
+        <td>0.001000</td>
+        <td>-1.000</td>
+      </tr>
+    </tbody>
+  </table>
+
 </div>
 
 
