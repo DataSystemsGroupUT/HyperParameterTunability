@@ -1,0 +1,7 @@
+,C,coef0,gamma,kernel,shrinking,tol
+C,0,1,1,1,1,0
+coef0,1,0,1,1,1,1
+gamma,1,1,0,1,1,1
+kernel,1,1,1,0,1,1
+shrinking,1,1,1,1,0,1
+tol,0,1,1,1,1,0

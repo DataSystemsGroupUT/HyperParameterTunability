@@ -1,0 +1,8 @@
+,learning_rate,max_depth,n_estimators,"('learning_rate', 'max_depth')","('learning_rate', 'n_estimators')","('max_depth', 'n_estimators')","('algorithm', 'max_depth', 'learning_rate')"
+learning_rate,0,1,1,1,1,1,1
+max_depth,1,0,1,1,1,1,1
+n_estimators,1,1,0,1,1,1,1
+"('learning_rate', 'max_depth')",1,1,1,0,1,1,1
+"('learning_rate', 'n_estimators')",1,1,1,1,0,0,0
+"('max_depth', 'n_estimators')",1,1,1,1,0,0,0
+"('algorithm', 'max_depth', 'learning_rate')",1,1,1,1,0,0,0

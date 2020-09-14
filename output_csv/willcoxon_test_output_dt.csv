@@ -1,0 +1,7 @@
+,max_features,min_samples_leaf,min_samples_split,criterion,"('max_features', 'min_samples_leaf')","('max_features', 'min_samples_split')"
+max_features,0,1,1,1,1,1
+min_samples_leaf,1,0,1,1,1,1
+min_samples_split,1,1,0,1,1,1
+criterion,1,1,1,0,1,1
+"('max_features', 'min_samples_leaf')",1,1,1,1,0,1
+"('max_features', 'min_samples_split')",1,1,1,1,1,0
