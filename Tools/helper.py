@@ -11,7 +11,9 @@ import scipy.stats
 import seaborn as sns
 import warnings
 
-
+"""
+Credit to https://github.com/janvanrijn/openml-pimp
+"""
 
 
 
@@ -236,5 +238,5 @@ def cls_kde_plot(file_path,cls,important_hyperparameter,x1,x2,y1,y2,b=0,kernel=N
     plt.ylim(y1,y2)
     if scale!=None:
         plt.xscale(scale)
-    plt.savefig("output_plots/"+plt_title+".jpg" ,bbox_inches = 'tight',pad_inches = 0)
+    plt.savefig("../output_plots/"+plt_title+".jpg" ,bbox_inches = 'tight',pad_inches = 0)
     plt.close()
