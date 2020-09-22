@@ -1,0 +1,8 @@
+,bootstrap,criterion,max_features,min_samples_leaf,min_samples_split,"('max_features', 'min_samples_leaf')","('bootstrap', 'max_features')"
+bootstrap,0,1,1,1,1,0,1
+criterion,1,0,1,1,1,1,1
+max_features,1,1,0,1,1,1,1
+min_samples_leaf,1,1,1,0,1,1,1
+min_samples_split,1,1,1,1,0,1,1
+"('max_features', 'min_samples_leaf')",0,1,1,1,1,0,1
+"('bootstrap', 'max_features')",1,1,1,1,1,1,0
