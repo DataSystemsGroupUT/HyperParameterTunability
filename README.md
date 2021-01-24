@@ -1,21 +1,21 @@
 
-# HyperParameterTunability
+# To tune or not to tune? A meta-leaning approach for recommending important hyperparameters
 
-The following repository contains: 
-* the scripts for collecting performance data of 6 
-machine learning algorithms on 200 classification tasks from OpenML environment
+The following repository contains all metrails for repoducing the paper "To tune or not to tune? A meta-leaning approach for recommending important hyperparameters":
+
+* the scripts for collecting performance data of 6 machine learning algorithms on 200 classification tasks from OpenML environment.
 * the collected performance data of SVM, Decision Tree, Random Forest, AdaBoost, Gradient Boosting and Extra Trees Classifiers.
 * Several notebooks that each performs one experiment and conducts the results.
 * Based on PerformanceData, created new datasets that all are in output_csv folders.
-* tools for 
+* tools for:
     - Importing and modifying the collected data
     - Searching correlation between the dataset metafeatures and classifier performances.
     - Conducting statistical tests to compare performance of the classifiers over the tasks.
     - Computing the best value for each important hyperparameter.
     - Computing Wilcoxon test for verifing the result.
+
 * script for extracting metafeatures of the datasets
 * script for performing fANOVA on the performance data
-    
 
 #### To start collecting data for a given classifier over all datasets
 
@@ -263,5 +263,3 @@ do_nemenyi_test(ranked_datasets, plot=True)
   </table>
 
 </div>
-
-
