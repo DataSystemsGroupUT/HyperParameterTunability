@@ -171,7 +171,7 @@ do_nemenyi_test(ranked_datasets, plot=True)
 ```
 
 
-![png](output_14_0.png)
+![png](./output_plots/nemenyi_test.png)
 
 
 
