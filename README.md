@@ -1,21 +1,21 @@
 
-# HyperParameterTunability
+# To tune or not to tune? A meta-leaning approach for recommending important hyperparameters
 
-The following repository contains: 
-* the scripts for collecting performance data of 6 
-machine learning algorithms on 200 classification tasks from OpenML environment
+The following repository contains all metrails for repoducing the paper "To tune or not to tune? A meta-leaning approach for recommending important hyperparameters":
+
+* the scripts for collecting performance data of 6 machine learning algorithms on 200 classification tasks from OpenML environment.
 * the collected performance data of SVM, Decision Tree, Random Forest, AdaBoost, Gradient Boosting and Extra Trees Classifiers.
 * Several notebooks that each performs one experiment and conducts the results.
 * Based on PerformanceData, created new datasets that all are in output_csv folders.
-* tools for 
+* tools for:
     - Importing and modifying the collected data
     - Searching correlation between the dataset metafeatures and classifier performances.
     - Conducting statistical tests to compare performance of the classifiers over the tasks.
     - Computing the best value for each important hyperparameter.
     - Computing Wilcoxon test for verifing the result.
+
 * script for extracting metafeatures of the datasets
 * script for performing fANOVA on the performance data
-    
 
 #### To start collecting data for a given classifier over all datasets
 
@@ -148,120 +148,3 @@ per_dataset_acc.head()
 ```python
 metafeatures = db.get_metafeatures()
 ```
-
-#### Conduct statistical tests (Friedman and Nemenyi)
-
-
-```python
-from Tools.stat_tests import *
-ranked_datasets = db.get_ranked_datasets()
-do_friedman_test(ranked_datasets)
-```
-
-
-
-
-    FriedmanchisquareResult(statistic=335.3428571428567, pvalue=2.5012413336096264e-70)
-
-
-
-
-```python
-do_nemenyi_test(ranked_datasets, plot=True)
-```
-
-
-![png](output_14_0.png)
-
-
-
-
-
-<div>
-  <style scoped>
-      .dataframe tbody tr th:only-of-type {
-          vertical-align: middle;
-      }
-
-      .dataframe tbody tr th {
-          vertical-align: top;
-      }
-
-      .dataframe thead th {
-          text-align: right;
-      }
-  </style>
-
-  <table border="1" class="dataframe">
-    <thead>
-      <tr style="text-align: right;">
-        <th></th>
-        <th>AB</th>
-        <th>DT</th>
-        <th>ET</th>
-        <th>GB</th>
-        <th>RF</th>
-        <th>SVM</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th>AB</th>
-        <td>-1.000000</td>
-        <td>0.001</td>
-        <td>0.173720</td>
-        <td>0.900000</td>
-        <td>0.011845</td>
-        <td>0.001</td>
-      </tr>
-      <tr>
-        <th>DT</th>
-        <td>0.001000</td>
-        <td>-1.000</td>
-        <td>0.001000</td>
-        <td>0.001000</td>
-        <td>0.001000</td>
-        <td>0.900</td>
-      </tr>
-      <tr>
-        <th>ET</th>
-        <td>0.173720</td>
-        <td>0.001</td>
-        <td>-1.000000</td>
-        <td>0.105836</td>
-        <td>0.900000</td>
-        <td>0.001</td>
-      </tr>
-      <tr>
-        <th>GB</th>
-        <td>0.900000</td>
-        <td>0.001</td>
-        <td>0.105836</td>
-        <td>-1.000000</td>
-        <td>0.005603</td>
-        <td>0.001</td>
-      </tr>
-      <tr>
-        <th>RF</th>
-        <td>0.011845</td>
-        <td>0.001</td>
-        <td>0.900000</td>
-        <td>0.005603</td>
-        <td>-1.000000</td>
-        <td>0.001</td>
-      </tr>
-      <tr>
-        <th>SVM</th>
-        <td>0.001000</td>
-        <td>0.900</td>
-        <td>0.001000</td>
-        <td>0.001000</td>
-        <td>0.001000</td>
-        <td>-1.000</td>
-      </tr>
-    </tbody>
-  </table>
-
-</div>
-
-

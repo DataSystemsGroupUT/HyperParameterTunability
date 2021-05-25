@@ -20,7 +20,9 @@ def do_nemenyi_test(ranked_data, plot=False):
         cd = Orange.evaluation.compute_CD(
             avg_ranks, ranked_data.shape[0], alpha='0.05', test='nemenyi')
         Orange.evaluation.graph_ranks(avg_ranks, names, cd=cd, width=10, textspace=1.5)
+        
         plt.show()
+        
 
     return posthoc_nemenyi_friedman(ranks_per_dataset)
 
@@ -32,5 +34,5 @@ def plot_heatmap(rank_frequences, save_plot=False):
     plt.ylabel('Rank')
     plt.tight_layout()
     if save_plot:
-        plt.savefig('heatmap_dec2.png', dpi=fig.dpi)
+        plt.savefig('./output_plots/heatmap_dec2.png', dpi=fig.dpi)
     plt.show()
