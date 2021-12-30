@@ -1,8 +1,5 @@
-from scipy.stats import wilcoxon
 import scipy.stats as ss
-import math
 import pandas as pd
-import numpy as np
 import warnings
 import matplotlib.pyplot as plt
 import seaborn as sns
