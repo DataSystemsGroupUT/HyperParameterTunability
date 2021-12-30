@@ -31,7 +31,8 @@ params_random_forest = {'n_estimators': np.repeat(100, N),
 
 params_adaboost = {'base_estimator__max_depth': np.random.choice(np.arange(1, 11, 1), N),
                    'algorithm': np.random.choice(['SAMME', 'SAMME.R'], N),
-                   'n_estimators': np.random.choice(np.arange(50, 501, 1), N),  # iterations in the paper
+                   # iterations in the paper
+                   'n_estimators': np.random.choice(np.arange(50, 501, 1), N),
                    'learning_rate': np.random.uniform(0.01, 2, N)}
 
 params_svm = {'kernel': np.random.choice(['rbf', 'sigmoid'], N),
@@ -43,11 +44,11 @@ params_svm = {'kernel': np.random.choice(['rbf', 'sigmoid'], N),
 
 params_gboosting = {'learning_rate': np.random.uniform(0.01, 1, N),
                     'criterion': np.random.choice(['friedman_mse', 'mse'], N),
-                   'n_estimators': np.random.choice(np.arange(50, 501, 1), N),
-                   'max_depth': np.random.choice(np.arange(1, 11, 1), N),
-                   'min_samples_split': np.random.choice(np.arange(2, 21, 1), N),
-                   'min_samples_leaf': np.random.choice(np.arange(1, 21, 1), N),
-                   'max_features': np.random.uniform(0.1, 0.9, N)}
+                    'n_estimators': np.random.choice(np.arange(50, 501, 1), N),
+                    'max_depth': np.random.choice(np.arange(1, 11, 1), N),
+                    'min_samples_split': np.random.choice(np.arange(2, 21, 1), N),
+                    'min_samples_leaf': np.random.choice(np.arange(1, 21, 1), N),
+                    'max_features': np.random.uniform(0.1, 0.9, N)}
 
 parameters = {'AdaBoost': params_adaboost,
               'RandomForest': params_random_forest,
@@ -68,7 +69,7 @@ def classification_per_algorithm(path, algorithm):
     """
     Fits different models with random configurations 
     on each of the datasets in path for the specified ML algorithm
-    
+
     Inputs:
             path - (str) directory of the datasets
             algorithm - (str) takes one of the following options
@@ -77,7 +78,7 @@ def classification_per_algorithm(path, algorithm):
     Outputs: 
             writes the results on a csv file
     """
-    
+
     warnings.filterwarnings("ignore")
     all_files = glob.glob(path + '*.csv')
     all_datasets = len(all_files)
@@ -85,16 +86,19 @@ def classification_per_algorithm(path, algorithm):
     results = pd.DataFrame()
     start_all = time.perf_counter()
     for index, file in enumerate(all_files):
-        print('Dataset {}({}) out of {} \n'.format(index + 1, file, all_datasets), flush=True)
+        print('Dataset {}({}) out of {} \n'.format(
+            index + 1, file, all_datasets), flush=True)
         try:
-            file_logs = classification_per_dataset(file, algorithm, models, parameters)
+            file_logs = classification_per_dataset(
+                file, algorithm, models, parameters)
             results = pd.concat([results, file_logs], axis=0)
 
             results.to_csv('{}_results.csv'.format(algorithm),
                            header=True,
                            index=False)
         except Exception as e:
-            print('The following error occurred in case of the dataset {}: \n{}'.format(file, e))
+            print(
+                'The following error occurred in case of the dataset {}: \n{}'.format(file, e))
     end_all = time.perf_counter()
     time_taken = (end_all - start_all) / 3600
     stdout.write("Performance data is collected! \n ")
@@ -106,7 +110,7 @@ def classification_per_dataset(file, algorithm, models, parameters):
     Gathers the performance data for each random configuration 
     on the given dataset for the specified ML algorithm  and 
     performs data imputation if necessary
-    
+
     Inputs:
             file - (str) name of the dataset
             algorithm - (str) takes one of the following options
@@ -119,9 +123,9 @@ def classification_per_dataset(file, algorithm, models, parameters):
                                        the algorithm
     Outputs: 
             final_logs - (DataFrame) performance data
-            
+
     """
-    
+
     data = pd.read_csv(file,
                        index_col=None,
                        header=0,
@@ -137,7 +141,7 @@ def classification_per_dataset(file, algorithm, models, parameters):
     # remove columns with only NaN values
     empty_cols = ~data.isna().all()
     data = data.loc[:, empty_cols]
-    
+
     # identifying numerical and categorical features
     cols = set(data.columns)
     num_cols = set(data._get_numeric_data().columns)
@@ -156,13 +160,14 @@ def classification_per_dataset(file, algorithm, models, parameters):
         imputation_types = ['mean', 'median', 'mode']
 
         final_logs = pd.DataFrame()
-        
+
         imputed_data = data.copy()
 
         for index, num_imput_type in enumerate(imputation_types):
             print('{}'.format(num_imput_type))
 
-            imputed_data[list(num_cols)] = numeric_impute(data, num_cols, num_imput_type)
+            imputed_data[list(num_cols)] = numeric_impute(
+                data, num_cols, num_imput_type)
 
             # logs per imputation method
             logs = get_logs(imputed_data, num_imput_type, algorithm,
@@ -184,28 +189,28 @@ def get_logs(data, num_imput_type, algorithm, file,
     """
     Gathers the performance data for each random configuration 
     on the given dataset for the specified ML algorithm
-    
+
     Inputs:
             data - (DataFrame) dataset, where the last column 
                                contains the response variable 
             num_imput_type - (str or None) imputation type that takes 
                               one of the following values
                               {'mean', 'median', 'mode', None}
-            
+
             algorithm - (str) takes one of the following options
                         {RandomForest, AdaBoost, ExtraTrees, 
                          SVM, GradientBoosting}
             file - (str) name of the dataset
-            
+
             combinations - (DataFrame) contains the random configurations
                             of the given algorithm
-            
+
             models - (dict) key: algorithm, 
                             value: the class of the algorithms
-            
+
     Outputs: 
             logs - (DataFrame) performance data
-            
+
     """
     # excluding the response variable
     X = data.iloc[:, :-1]
@@ -250,10 +255,10 @@ def get_logs(data, num_imput_type, algorithm, file,
 
     for index in range(n_comb):
         print('{}/{}'.format(index + 1, n_comb))
-        
+
         params = dict(zip(combinations.columns,
-                      list(combinations.iloc[index,:])))
-        
+                      list(combinations.iloc[index, :])))
+
         model = models[algorithm]
         model.set_params(**params)
 
@@ -275,7 +280,7 @@ def get_logs(data, num_imput_type, algorithm, file,
                 X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
             else:
                 X_train, X_test = X[train_index, :], X[test_index, :]
-            
+
             y_train, y_test = y[train_index], y[test_index]
 
             start_tr = time.perf_counter()
@@ -332,7 +337,7 @@ def get_combinations(parameters, algorithm):
     """
     Creates a DataFrame of the random configurations
     of the given algorithm
-    
+
     Inputs:
             parameters - (dict) key: algorithm
                                 value: the configuration space of 
@@ -340,11 +345,11 @@ def get_combinations(parameters, algorithm):
             algorithm - (str) takes one of the following options
                         {RandomForest, AdaBoost, ExtraTrees, 
                          SVM, GradientBoosting}
-            
+
     Outputs: 
             combinations - (DataFrame) realizations of the 
                             random configurations
-            
+
     """
     param_grid = parameters[algorithm]
     combinations = pd.DataFrame(param_grid)
@@ -356,7 +361,7 @@ def other_metrics(y_true, predictions, multilabel):
     Treating the case of multiple labels for 
     computing performance measures suitable for 
     binary labels
-    
+
     Inputs:
             y_true - (array or sparse matrix) true values of the 
                       labels
@@ -366,9 +371,9 @@ def other_metrics(y_true, predictions, multilabel):
                           multiple labels (True)
     Outputs: 
             f1, recall, precision, auc - (float) performace metrics
-            
+
     """
-    
+
     if multilabel:
         f1 = f1_score(y_true, predictions, average='micro')
         recall = recall_score(y_true, predictions, average='micro')
@@ -387,7 +392,7 @@ def numeric_impute(data, num_cols, method):
     """
     Performs numerical data imputaion based 
     on the given method
-    
+
     Inputs:
             data - (DataFrame) dataset with missing 
                      numeric values 
@@ -395,10 +400,10 @@ def numeric_impute(data, num_cols, method):
             method - (str) imputation type that takes 
                               one of the following values
                               {'mean', 'median', 'mode'}
-            
+
     Outputs: 
             output - (DataFrame) dataset with imputed missing values 
-            
+
     """
     num_data = data[list(num_cols)]
     if method == 'mode':
@@ -406,4 +411,3 @@ def numeric_impute(data, num_cols, method):
     else:
         output = num_data.fillna(getattr(num_data, method)())
     return output
-
