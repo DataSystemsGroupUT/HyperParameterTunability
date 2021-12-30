@@ -64,7 +64,8 @@ class Database(object):
             return self.metafeatures
         else:
             metafeatures = self.database['metafeatures']
-            metafeatures.num_imput_type = metafeatures.num_imput_type.fillna('none')
+            metafeatures.num_imput_type = metafeatures.num_imput_type.fillna(
+                'none')
             metafeatures = metafeatures.loc[~np.isin(metafeatures.num_imput_type,
                                                      ['median', 'mode']), :]
             self.metafeatures = metafeatures
@@ -76,13 +77,17 @@ class Database(object):
         else:
             combined_data = self.get_per_dataset_accuracies()
             out = pd.DataFrame({'dataset': self.dataset_names})
-            ranked = combined_data.rank(axis=1, method='average', ascending=False)
+            ranked = combined_data.rank(
+                axis=1, method='average', ascending=False)
             normal_case = np.std(np.arange(1, 7, 1), ddof=1)
             non_ties = ranked.std(axis=1) == normal_case
             ties = ~non_ties
-            resolve_ties = self.custom_rank(combined_data.loc[ties, :], verbose)
-            ranked_merged = out.merge(ranked.loc[non_ties, :], left_index=True, right_index=True)
-            self.ranked_datasets = pd.concat([resolve_ties, ranked_merged], axis=0)
+            resolve_ties = self.custom_rank(
+                combined_data.loc[ties, :], verbose)
+            ranked_merged = out.merge(
+                ranked.loc[non_ties, :], left_index=True, right_index=True)
+            self.ranked_datasets = pd.concat(
+                [resolve_ties, ranked_merged], axis=0)
             return self.ranked_datasets
 
     def get_best_per_dataset(self):
@@ -112,7 +117,8 @@ class Database(object):
             if n == 1:
                 final_rank[selected] = ranks[:n]
             else:
-                final_rank[selected] = self.compare_algorithms(name, ranks[:n], dataset_name)
+                final_rank[selected] = self.compare_algorithms(
+                    name, ranks[:n], dataset_name)
             ranks = ranks[n:]
         return final_rank
 
@@ -158,7 +164,8 @@ class Database(object):
         for i in range(n):
             if verbose:
                 print(data.dataset[i])
-            ranked_data.iloc[i, 1:] = self.ranker_per_row(data.iloc[i, 1:], data.dataset[i])
+            ranked_data.iloc[i, 1:] = self.ranker_per_row(
+                data.iloc[i, 1:], data.dataset[i])
         return ranked_data
 
     @staticmethod
@@ -221,7 +228,8 @@ class Database(object):
         cv_recall = data.CV_recall[which_max].mean()
         cv_precision = data.CV_precision[which_max].mean()
         cv_auc = data.CV_auc[which_max].mean()
-        overfitting = (cv_accuracy[which_max] < data.CV_accuracy_train[which_max]) * 1
+        overfitting = (cv_accuracy[which_max] <
+                       data.CV_accuracy_train[which_max]) * 1
 
         median_accuracy = cv_accuracy.median()
         std_accuracy = cv_accuracy.std()

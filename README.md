@@ -8,17 +8,16 @@ The following repository contains all metrails for repoducing the paper "To tune
 * Several notebooks that each performs one experiment and conducts the results.
 * Based on PerformanceData, created new datasets that all are in output_csv folders.
 * tools for:
-    - Importing and modifying the collected data
-    - Searching correlation between the dataset metafeatures and classifier performances.
-    - Conducting statistical tests to compare performance of the classifiers over the tasks.
-    - Computing the best value for each important hyperparameter.
-    - Computing Wilcoxon test for verifing the result.
+  * Importing and modifying the collected data
+  * Searching correlation between the dataset metafeatures and classifier performances.
+  * Conducting statistical tests to compare performance of the classifiers over the tasks.
+  * Computing the best value for each important hyperparameter.
+  * Computing Wilcoxon test for verifing the result.
 
 * script for extracting metafeatures of the datasets
 * script for performing fANOVA on the performance data
 
-#### To start collecting data for a given classifier over all datasets
-
+## To start collecting data for a given classifier over all datasets
 
 ```python
 from DataCollection.functions import *
@@ -27,38 +26,31 @@ path_to_datasets = 'Datasets/'
 classification_per_algorithm(path=path_to_datasets, algorithm='DecisionTree')
 ```
 
-#### Conduct fANOVA on the data
-
+## Conduct fANOVA on the data
 
 ```python
 from fANOVA.fanova_functions import *
 do_fanova(dataset_name='PerformanceData/AB_results_total.csv', algorithm='AdaBoost')
 ```
 
-#### Extract Metafeatures
-
+## Extract Metafeatures
 
 ```python
 from MetafeatureExtraction.metafeatures import *
 extract_for_all(path_to_datasets)
 ```
 
-#### Create the Database object to import the collected data in desired formats
-
+## Create the Database object to import the collected data in desired formats
 
 ```python
 from Tools.database import Database
 db = Database()
 ```
 
-
 ```python
 per_dataset_acc = db.get_per_dataset_accuracies()
 per_dataset_acc.head()
 ```
-
-
-
 
 <div>
 <style scoped>
@@ -141,8 +133,6 @@ per_dataset_acc.head()
   </tbody>
 </table>
 </div>
-
-
 
 
 ```python

@@ -19,16 +19,17 @@ def do_nemenyi_test(ranked_data, plot=False):
         avg_ranks = ranks_per_dataset.mean(axis=0)
         cd = Orange.evaluation.compute_CD(
             avg_ranks, ranked_data.shape[0], alpha='0.05', test='nemenyi')
-        Orange.evaluation.graph_ranks(avg_ranks, names, cd=cd, width=10, textspace=1.5)
-        
+        Orange.evaluation.graph_ranks(
+            avg_ranks, names, cd=cd, width=10, textspace=1.5)
+
         plt.show()
-        
 
     return posthoc_nemenyi_friedman(ranks_per_dataset)
 
 
 def plot_heatmap(rank_frequences, save_plot=False):
-    ax = sns.heatmap(rank_frequences, cmap=sns.cm.rocket_r, annot=True, fmt='g')
+    ax = sns.heatmap(rank_frequences, cmap=sns.cm.rocket_r,
+                     annot=True, fmt='g')
     plt.title('Heat Map for Algorithm Performance Analysis')
     plt.xlabel('Algorithm Name')
     plt.ylabel('Rank')

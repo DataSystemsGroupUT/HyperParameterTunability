@@ -21,8 +21,10 @@ from tools.helper import cls_kde_plot
 
 if __name__ == "__main__":
     # you can see in this loop how we recall functions over 200 datasets for 6 classifiers.
-    for cls in {"RF","SVM","ET","DT","AB","GB"}:
-        df=pd.read_csv("../PerformanceData/"+cls+"_fANOVA_results.csv")
-        total_ranks, marginal_contribution, _ = obtain_marginal_contributions(df)
-        sorted_values, keys = determine_relevant(marginal_contribution, max_interactions=3)
+    for cls in {"RF", "SVM", "ET", "DT", "AB", "GB"}:
+        df = pd.read_csv("../PerformanceData/"+cls+"_fANOVA_results.csv")
+        total_ranks, marginal_contribution, _ = obtain_marginal_contributions(
+            df)
+        sorted_values, keys = determine_relevant(
+            marginal_contribution, max_interactions=3)
         marginal_plots(sorted_values, keys, cls)

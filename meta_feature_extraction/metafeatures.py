@@ -14,7 +14,7 @@ from sklearn.metrics import mutual_info_score, accuracy_score
 
 
 def numeric_impute(data, num_cols, method):
-    
+
     num_data = data[num_cols]
     if method == 'mode':
         output = num_data.fillna(getattr(num_data, method)().iloc[0])
@@ -38,14 +38,14 @@ def summary_stats(data, include_quantiles=False):
     q3 = quantiles[2]
     mean = np.mean(data)
     std = np.std(data)
-    
+
     if include_quantiles:
         return minn, q1, mean, std, q3, maxx
     else:
         return minn, mean, std, maxx
 
 
-def pair_corr(data):    
+def pair_corr(data):
     cors = abs(data.corr().values)
     cors = np.triu(cors, 1).flatten()
     cors = cors[cors != 0]
@@ -60,19 +60,19 @@ def get_mutual_info(x, y, bins):
 
 def mutual_info(X, y):
     bins = 10
-    
+
     # check if X and y have the same length
     n = X.shape[1]
     mat_mi = np.zeros(n)
 
     for ix in np.arange(n):
         mat_mi[ix] = get_mutual_info(X.iloc[:, ix], y, bins)
-    
+
     return mat_mi
 
 
 def preprocessing(data):
-    
+
     x = data.iloc[:, :-1]
     # selecting the response variable
     y = data.iloc[:, -1]
@@ -80,12 +80,12 @@ def preprocessing(data):
     x = pd.get_dummies(x)
     le = LabelEncoder()
     y = le.fit_transform(y)
-    
+
     return x, y
 
 
 def meta_features(data, num_cols, categorical_cols):
-    
+
     metafeatures = dict()
     target_variable = data.iloc[:, -1]
     nr_classes = target_variable.nunique()
@@ -93,54 +93,54 @@ def meta_features(data, num_cols, categorical_cols):
 
     nr_instances = data.shape[0]
     metafeatures['nr_instances'] = nr_instances
-    
+
     log_nr_instances = np.log(nr_instances)
     metafeatures['log_nr_instances'] = log_nr_instances
-    
+
     nr_features = data.shape[1]
     metafeatures['nr_features'] = nr_features
-    
+
     log_nr_features = np.log(nr_features)
     metafeatures['log_nr_features'] = log_nr_features
-    
+
     missing_val = data.isnull().sum().sum() + data.isna().sum().sum()
     metafeatures['missing_val'] = missing_val
-    
-    # Ratio of Missing Values 
+
+    # Ratio of Missing Values
     ratio_missing_val = missing_val / data.size
     metafeatures['ratio_missing_val'] = ratio_missing_val
-    
-    # Number of Numerical Features 
+
+    # Number of Numerical Features
     nr_numerical_features = len(num_cols)
     metafeatures['nr_numerical_features'] = nr_numerical_features
-    
-    # Number of Categorical Features 
+
+    # Number of Categorical Features
     nr_categorical_features = len(categorical_cols)
     metafeatures['nr_categorical_features'] = nr_categorical_features
 
     # Dataset Ratio
     dataset_ratio = nr_features / nr_instances
     metafeatures['dataset_ratio'] = dataset_ratio
-        
+
     # Categorical Features Statistics
     if nr_categorical_features != 0:
 
         labels = data[categorical_cols].nunique()
 
-        # Labels Sum 
+        # Labels Sum
         labels_sum = np.sum(labels)
-        
-        # Labels Mean 
+
+        # Labels Mean
         labels_mean = np.mean(labels)
 
-        # Labels Std 
+        # Labels Std
         labels_std = np.std(labels)
-        
+
     else:
         labels_sum = 0
         labels_mean = 0
         labels_std = 0
-        
+
     metafeatures['labels_sum'] = labels_sum
     metafeatures['labels_mean'] = labels_mean
     metafeatures['labels_std'] = labels_std
@@ -149,32 +149,32 @@ def meta_features(data, num_cols, categorical_cols):
 
 
 def meta_features_statistical(data, num_cols):
-    
+
     metafeatures = dict()
     nr_numerical_features = len(num_cols)
-    
+
     if nr_numerical_features != 0:
-        
+
         skewness_values = abs(data[num_cols].skew())
-        kurtosis_values = data[num_cols].kurtosis()        
-                
+        kurtosis_values = data[num_cols].kurtosis()
+
         skew_min, skew_q1, \
-        skew_mean, skew_std, \
-        skew_q3, skew_max = summary_stats(skewness_values, 
-                                          include_quantiles=True)
-        
+            skew_mean, skew_std, \
+            skew_q3, skew_max = summary_stats(skewness_values,
+                                              include_quantiles=True)
+
         kurtosis_min, kurtosis_q1, \
-        kurtosis_mean, kurtosis_std, \
-        kurtosis_q3, kurtosis_max = summary_stats(kurtosis_values,
-                                                  include_quantiles=True)
-               
+            kurtosis_mean, kurtosis_std, \
+            kurtosis_q3, kurtosis_max = summary_stats(kurtosis_values,
+                                                      include_quantiles=True)
+
         pairwise_correlations = pair_corr(data[num_cols])
         try:
             rho_min, rho_mean, \
-            rho_std, rho_max = summary_stats(pairwise_correlations)
+                rho_std, rho_max = summary_stats(pairwise_correlations)
         except IndexError:
             pass
-                    
+
     var_names = ['skew_min', 'skew_std', 'skew_mean',
                  'skew_q1', 'skew_q3', 'skew_max',
                  'kurtosis_min', 'kurtosis_std', 'kurtosis_mean',
@@ -183,10 +183,9 @@ def meta_features_statistical(data, num_cols):
 
     for var in var_names:
         try:
-            metafeatures[var] = eval(var)            
-        except NameError:           
+            metafeatures[var] = eval(var)
+        except NameError:
             metafeatures[var] = 0
-            
 
     return metafeatures
 
@@ -206,12 +205,12 @@ def norm_entropy(X):
         x = X.iloc[:, i]
         cont = len(np.unique(x)) > bins
         if cont:
-            # discretizing cont features 
+            # discretizing cont features
             x_discr = np.histogram(x, bins)[0]
             x_norm = x_discr / float(np.sum(x_discr))
             h_x = shan_entropy(x_norm)
         else:
-            x_norm = x.value_counts().values / n 
+            x_norm = x.value_counts().values / n
             h_x = shan_entropy(x_norm)
         h[i] = h_x
     h /= np.log2(n)
@@ -219,100 +218,108 @@ def norm_entropy(X):
 
 
 def meta_features_info_theoretic(X, y):
-    
+
     metafeatures = dict()
     nr_instances = X.shape[0]
     # Class Entropy
-    class_probs = np.bincount(y) / nr_instances 
+    class_probs = np.bincount(y) / nr_instances
     class_entropy = shan_entropy(class_probs)
     metafeatures['class_entropy'] = class_entropy
-    # Class probability    
+    # Class probability
     metafeatures['prob_min'], metafeatures['prob_mean'], \
-    metafeatures['prob_std'], metafeatures['prob_max'] = summary_stats(class_probs)
+        metafeatures['prob_std'], metafeatures['prob_max'] = summary_stats(
+            class_probs)
 
     # Norm. attribute entropy
     h = norm_entropy(X)
     metafeatures['norm_entropy_min'], metafeatures['norm_entropy_mean'], \
-    metafeatures['norm_entropy_std'], metafeatures['norm_entropy_max'] = summary_stats(h)
-    
+        metafeatures['norm_entropy_std'], metafeatures['norm_entropy_max'] = summary_stats(
+            h)
+
     # Mutual information
     mutual_information = mutual_info(X, y)
     metafeatures['mi_min'], metafeatures['mi_mean'], \
-    metafeatures['mi_std'], metafeatures['mi_max'] = summary_stats(mutual_information)
-    
+        metafeatures['mi_std'], metafeatures['mi_max'] = summary_stats(
+            mutual_information)
+
     # Equiv. nr. of features
-    metafeatures['equiv_nr_feat'] = metafeatures['class_entropy'] / metafeatures['mi_mean']
-    
+    metafeatures['equiv_nr_feat'] = metafeatures['class_entropy'] / \
+        metafeatures['mi_mean']
+
     # Noise-signal ratio
     noise = metafeatures['norm_entropy_mean'] - metafeatures['mi_mean']
     metafeatures['noise_signal_ratio'] = noise / metafeatures['mi_mean']
-    
+
     return metafeatures
 
 
 class LandmarkerModel:
-    
+
     def __init__(self, model, X_train, y_train, X_test, y_test):
         self.model = model
         self.X_train = X_train
         self.X_test = X_test
         self.y_train = y_train
         self.y_test = y_test
-        
+
     def accuracy(self):
         self.model.fit(self.X_train, self.y_train)
         predictions = self.model.predict(self.X_test)
-        CV_accuracy = accuracy_score(self.y_test, predictions)          
+        CV_accuracy = accuracy_score(self.y_test, predictions)
         return CV_accuracy
 
-    
+
 def meta_features_landmarkers(X, y):
-    
+
     metafeatures = dict()
     k = 10
     kf = StratifiedKFold(n_splits=k, shuffle=True)
-    
+
     model_1nn = KNeighborsClassifier(n_neighbors=1)
     model_dt = DecisionTreeClassifier()
     model_gnb = GaussianNB()
     model_lda = LinearDiscriminantAnalysis()
-    
+
     cv_accuracy_1nn = 0
     cv_accuracy_dt = 0
     cv_accuracy_gnb = 0
     cv_accuracy_lda = 0
-    
+
     for train_index, test_index in kf.split(X, y):
-        
+
         x_train, x_test = X.iloc[train_index, :], X.iloc[test_index, :]
         y_train, y_test = y[train_index], y[test_index]
-         
-        cv_accuracy_1nn += LandmarkerModel(model_1nn, x_train, y_train, x_test, y_test).accuracy()
-        cv_accuracy_dt += LandmarkerModel(model_dt, x_train, y_train, x_test, y_test).accuracy()
-        cv_accuracy_gnb += LandmarkerModel(model_gnb, x_train, y_train, x_test, y_test).accuracy()
-        
+
+        cv_accuracy_1nn += LandmarkerModel(model_1nn,
+                                           x_train, y_train, x_test, y_test).accuracy()
+        cv_accuracy_dt += LandmarkerModel(model_dt,
+                                          x_train, y_train, x_test, y_test).accuracy()
+        cv_accuracy_gnb += LandmarkerModel(model_gnb,
+                                           x_train, y_train, x_test, y_test).accuracy()
+
         try:
-            cv_accuracy_lda += LandmarkerModel(model_lda, x_train, y_train, x_test, y_test).accuracy()
+            cv_accuracy_lda += LandmarkerModel(model_lda,
+                                               x_train, y_train, x_test, y_test).accuracy()
         except scipy.linalg.LinAlgError:
-            pass    
-    
+            pass
+
     cv_accuracy_1nn /= k
     cv_accuracy_dt /= k
     cv_accuracy_gnb /= k
     cv_accuracy_lda /= k
-    
+
     metafeatures['Landmarker_1NN'] = cv_accuracy_1nn
     metafeatures['Landmarker_dt'] = cv_accuracy_dt
     metafeatures['Landmarker_gnb'] = cv_accuracy_gnb
     metafeatures['Landmarker_lda'] = cv_accuracy_lda
-        
+
     return metafeatures
 
 
 def all_metafeatures(data, num_cols, metafeatures1):
 
     metafeatures2 = meta_features_statistical(data, num_cols)
-    X, y = preprocessing(data)                             
+    X, y = preprocessing(data)
     metafeatures3 = meta_features_info_theoretic(X, y)
     metafeatures4 = meta_features_landmarkers(X, y)
     metafeatures = dict_merge(metafeatures1, metafeatures2,
@@ -321,7 +328,7 @@ def all_metafeatures(data, num_cols, metafeatures1):
 
 
 def extract_metafeatures(file):
-  
+
     warnings.filterwarnings("ignore")
     data = pd.read_csv(file,
                        index_col=None,
@@ -337,11 +344,11 @@ def extract_metafeatures(file):
     data = data.loc[:, (data != data.iloc[0]).any()]
     const_col = data.std().index[data.std() == 0]
     data = data.drop(const_col, axis=1)
-    
+
     # remove columns with only NaN values
     empty_cols = ~data.isna().all()
     data = data.loc[:, empty_cols]
-    
+
     cols = set(data.columns)
     num_cols = set(data._get_numeric_data().columns)
     categorical_cols = list(cols.difference(num_cols))
@@ -350,36 +357,39 @@ def extract_metafeatures(file):
     categ_data = data[categorical_cols]
     data[categorical_cols] = categ_data.fillna(categ_data.mode().iloc[0])
     metafeatures1 = meta_features(data, num_cols, categorical_cols)
-    
+
     # Numerical Features Statistics
-    missing_val = metafeatures1['missing_val'] 
-        
+    missing_val = metafeatures1['missing_val']
+
     if missing_val != 0:
-        
+
         imputation_types = ['mean', 'median', 'mode']
         imputed_data = data.copy()
 
         results = pd.DataFrame()
         for index, num_imput_type in enumerate(imputation_types):
-                       
-            num_cols = list(num_cols) 
-            imputed_data[num_cols] = numeric_impute(data, num_cols, num_imput_type)
+
+            num_cols = list(num_cols)
+            imputed_data[num_cols] = numeric_impute(
+                data, num_cols, num_imput_type)
             metafeatures1['num_imput_type'] = num_imput_type
-            metafeatures = all_metafeatures(imputed_data, num_cols, metafeatures1)
+            metafeatures = all_metafeatures(
+                imputed_data, num_cols, metafeatures1)
             df = pd.DataFrame([metafeatures])
             results = pd.concat([results, df], axis=0)
     else:
         metafeatures1['num_imput_type'] = None
         metafeatures = all_metafeatures(data, num_cols, metafeatures1)
         results = pd.DataFrame([metafeatures])
-    
+
     dataset_name = file.split('\\')[-1]
     results['dataset'] = dataset_name
-    
+
     return results
 
+
 def extract_for_all(path):
- 
+
     allFiles = glob.glob(path + "*.csv")
 
     results = pd.DataFrame()

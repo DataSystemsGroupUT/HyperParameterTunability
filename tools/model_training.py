@@ -34,7 +34,6 @@ class Model(object):
         else:
             self.X_pca = None
 
-
     def preprocessing(self):
         dataset = self.dataset
         X = pd.get_dummies(dataset.iloc[:, :-1])
@@ -66,8 +65,10 @@ class Model(object):
         random_search.fit(self.X, self.y)
         end = time()
         time_taken_without_pca = end - start
-        best_idx = np.flatnonzero(random_search.cv_results_['rank_test_score'] == 1)[0]
-        self.best_score = random_search.cv_results_['mean_test_score'][best_idx]
+        best_idx = np.flatnonzero(random_search.cv_results_[
+                                  'rank_test_score'] == 1)[0]
+        self.best_score = random_search.cv_results_[
+            'mean_test_score'][best_idx]
         self.best_model = random_search.best_estimator_
 
         if self.verbose:
@@ -114,7 +115,6 @@ class Model(object):
         return out_df.sort_values('importance',
                                   ascending=False).iloc[:top, :]
 
-
     @staticmethod
     # Utility function to report best scores
     def report(results, n_top=3):
@@ -158,11 +158,11 @@ class Model(object):
 
         params_gboosting = {'learning_rate': sp_rand(0.01, 1),
                             'criterion': ['friedman_mse', 'mse'],
-                           'n_estimators': sp_randint(50, 501),
-                           'max_depth': sp_randint(1, 11),
-                           'min_samples_split': sp_randint(2, 21),
-                           'min_samples_leaf': sp_randint(1, 21),
-                           'max_features': sp_rand(0.1, 0.9)}
+                            'n_estimators': sp_randint(50, 501),
+                            'max_depth': sp_randint(1, 11),
+                            'min_samples_split': sp_randint(2, 21),
+                            'min_samples_leaf': sp_randint(1, 21),
+                            'max_features': sp_rand(0.1, 0.9)}
 
         params_log_regression = {'penalty': ['l2', 'none'],
                                  'solver': ['newton-cg', 'lbfgs', 'sag', 'saga'],
@@ -188,9 +188,3 @@ class Model(object):
             data_pca = pca.fit_transform(data)
             less_var = sum(pca.explained_variance_ratio_) < var_threshold
         return data_pca
-
-
-
-
-
-
