@@ -36,7 +36,7 @@ do_fanova(dataset_name='PerformanceData/AB_results_total.csv', algorithm='AdaBoo
 ## Extract Metafeatures
 
 ```python
-from MetafeatureExtraction.metafeatures import *
+from tools.metafeatures import *
 extract_for_all(path_to_datasets)
 ```
 
