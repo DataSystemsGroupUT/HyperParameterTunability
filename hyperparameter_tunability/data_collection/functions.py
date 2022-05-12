@@ -358,16 +358,16 @@ def get_combinations(parameters, algorithm):
 
 def other_metrics(y_true, predictions, multilabel):
     """
-    Treating the case of multiple labels for 
-    computing performance measures suitable for 
+    Treating the case of multiple labels for
+    computing performance measures suitable for
     binary labels
 
     Inputs:
-            y_true - (array or sparse matrix) true values of the 
+            y_true - (array or sparse matrix) true values of the
                       labels
-            predictions - (array or sparse matrix) predicted values of the 
-                      labels 
-            multilabel - (boolean) specifies if there are 
+            predictions - (array or sparse matrix) predicted values of the
+                      labels
+            multilabel - (boolean) specifies if there are
                           multiple labels (True)
     Outputs: 
             f1, recall, precision, auc - (float) performace metrics
@@ -390,11 +390,11 @@ def other_metrics(y_true, predictions, multilabel):
 
 def numeric_impute(data, num_cols, method):
     """
-    Performs numerical data imputaion based 
+    Performs numerical data imputaion based
     on the given method
 
     Inputs:
-            data - (DataFrame) dataset with missing 
+            data - (DataFrame) dataset with missing
                      numeric values 
             num_cols - (set) numeric column names
             method - (str) imputation type that takes 

@@ -1,9 +1,9 @@
+""" you can use this file, for metafeatures extraction."""
 import numpy as np
 import pandas as pd
 import glob
 import warnings
 import scipy
-from scipy.stats import kurtosis, skew
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import StratifiedKFold
 from sklearn.neighbors import KNeighborsClassifier
